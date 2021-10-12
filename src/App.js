@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
 
-const urlNewGame = "https://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/new_game"
-const urlFlagPosition = "https://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/flag_position"
-const urlFieldPosition = "https://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/click_position"
-const urlReset = "https://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/reset_game"
+const urlNewGame = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/new_game"
+const urlFlagPosition = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/flag_position"
+const urlFieldPosition = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/click_position"
+const urlReset = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/reset_game"
 
 function App() {
 
@@ -68,7 +68,7 @@ function App() {
       })  
   }
 
-  const newGame = () => {
+  const newGame = React.useCallback(() => {
     const requestBody = {
       numberRows: numberRows,
       numberColumns: numberColumns,
@@ -90,7 +90,7 @@ function App() {
     }).catch(() => {
       console.log("erro ao requisitar api")
     })
-  }
+  }, [numberRows, numberColumns, numberMinesOnField]);
 
   const onKeyDown = () => {
     return false
@@ -98,7 +98,7 @@ function App() {
 
   useEffect(() => {
     newGame();
-  }, [setGameMatch]);
+  }, [setGameMatch, newGame]);
 
   return (
     <div className="App">
