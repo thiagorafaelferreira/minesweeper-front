@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
 
-const urlNewGame = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/new_game"
-const urlFlagPosition = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/flag_position"
-const urlFieldPosition = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/click_position"
-const urlReset = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/reset_game"
+const urlNewGame = "https://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/new_game"
+const urlFlagPosition = "https://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/flag_position"
+const urlFieldPosition = "https://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/click_position"
+const urlReset = "https://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/reset_game"
 
 function App() {
 
@@ -92,6 +92,10 @@ function App() {
     })
   }
 
+  const onKeyDown = () => {
+    return false
+  }
+
   useEffect(() => {
     newGame();
   }, [setGameMatch]);
@@ -107,12 +111,12 @@ function App() {
           <div className="config-title">Flags</div>
         </div>
         <div className="area_config">
-          <input type="number" className="config" value={numberRows} onChange={ev => setNumberRows(ev.target.value)} onKeyDown="return false" />
-          <input type="number" className="config" value={numberColumns} onChange={ev => setNumberColumns(ev.target.value)} onKeyDown="return false" />
-          <input type="number" className="config" value={numberMinesOnField} onChange={ev => setNumberMinesOnField(ev.target.value)} onKeyDown="return false" />
-          <input type="number" className="config" value={numberFlags} readonly />
+          <input type="number" className="config" value={numberRows} onChange={ev => setNumberRows(ev.target.value)} onKeyDown={onKeyDown} />
+          <input type="number" className="config" value={numberColumns} onChange={ev => setNumberColumns(ev.target.value)} onKeyDown={onKeyDown} />
+          <input type="number" className="config" value={numberMinesOnField} onChange={ev => setNumberMinesOnField(ev.target.value)} onKeyDown={onKeyDown} />
+          <input type="number" className="config" value={numberFlags} readOnly />
         </div>
-        
+
         <div onContextMenu={(e)=>  {e.preventDefault(); return false;}}>
           {gameMatch && gameMatch.mineField &&
               gameMatch.mineField.map(field => <div className="row">
