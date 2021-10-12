@@ -112,6 +112,7 @@ function App() {
           <input type="number" className="config" value={numberMinesOnField} onChange={ev => setNumberMinesOnField(ev.target.value)} onKeyDown="return false" />
           <input type="number" className="config" value={numberFlags} readonly />
         </div>
+        
         <div onContextMenu={(e)=>  {e.preventDefault(); return false;}}>
           {gameMatch && gameMatch.mineField &&
               gameMatch.mineField.map(field => <div className="row">
