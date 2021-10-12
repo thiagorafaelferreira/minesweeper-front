@@ -13,6 +13,7 @@ function App() {
   const [numberRows, setNumberRows] = useState(10);
   const [numberColumns, setNumberColumns] = useState(10);
   const [numberMinesOnField, setNumberMinesOnField] = useState(10);
+  const [numberFlags, setNumberFlags] = useState(10);
 
   const clickResetNewGame = () => {
     reset();
@@ -54,12 +55,17 @@ function App() {
       }
     }
 
-    axios.put((evt.button === 0 ? urlFieldPosition : urlFlagPosition) + `/${row}/${column}`, {}, headers).then(response => {
-      setGameMatch(response.data)
-      validateGameOver(response.data);
-    }).catch(() => {
-      console.log("erro ao requisitar api")
-    })  
+    if(evt.button === 2 && numberFlags > 0 ) {
+        setNumberFlags(numberFlags - 1);
+    }
+
+    if(!(evt.button === 2 && numberFlags === 0))
+      axios.put((evt.button === 2 && numberFlags > 0 ? urlFlagPosition : urlFieldPosition ) + `/${row}/${column}`, {}, headers).then(response => {
+        setGameMatch(response.data)
+        validateGameOver(response.data);
+      }).catch(() => {
+        console.log("erro ao requisitar api")
+      })  
   }
 
   const newGame = () => {
@@ -68,6 +74,8 @@ function App() {
       numberColumns: numberColumns,
       numberMinesOnField: numberMinesOnField
     }
+
+    setNumberFlags(numberMinesOnField);
 
     let headers = {
       headers: {
@@ -96,11 +104,13 @@ function App() {
           <div className="config-title">Rows</div>
           <div className="config-title">Columns</div>
           <div className="config-title">Mines</div>
+          <div className="config-title">Flags</div>
         </div>
         <div className="area_config">
           <input type="number" className="config" value={numberRows} onChange={ev => setNumberRows(ev.target.value)} onKeyDown="return false" />
           <input type="number" className="config" value={numberColumns} onChange={ev => setNumberColumns(ev.target.value)} onKeyDown="return false" />
           <input type="number" className="config" value={numberMinesOnField} onChange={ev => setNumberMinesOnField(ev.target.value)} onKeyDown="return false" />
+          <input type="number" className="config" value={numberFlags} readonly />
         </div>
         <div onContextMenu={(e)=>  {e.preventDefault(); return false;}}>
           {gameMatch && gameMatch.mineField &&

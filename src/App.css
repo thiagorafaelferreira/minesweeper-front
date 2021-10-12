@@ -14,15 +14,22 @@
   margin-left: 2px;
   margin-bottom: 2px;
   border-radius: 5px;
-}
-
-.field-blue {
   font-size: 12px;
   color: #282c34;
   font-weight: bold;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.field:hover {
+  background-color: #F77F00;
+  border: 1px yellow solid;
+  height: 23px;
+  width: 23px;
+}
+
+.field-blue {
   background-color: #00BCD4;
 }
 
@@ -31,7 +38,7 @@
 }
 
 .field-red {
-  background-color: #F77F00;
+  background-color: #D62828;
 }
 
 .row {
