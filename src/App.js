@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
 
-const urlNewGame = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/new_game"
-const urlFlagPosition = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/flag_position"
-const urlFieldPosition = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/click_position"
-const urlReset = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080/reset_game"
+const baseUrl = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080"
+const urlNewGame = `${baseUrl}/new_game`
+const urlFlagPosition = `${baseUrl}/flag_position`
+const urlFieldPosition = `${baseUrl}/click_position`
+const urlReset = `${baseUrl}/reset_game`
 
 function App() {
 
@@ -14,6 +15,8 @@ function App() {
   const [numberColumns, setNumberColumns] = useState(10);
   const [numberMinesOnField, setNumberMinesOnField] = useState(10);
   const [numberFlags, setNumberFlags] = useState(10);
+  const [winCount, setWinCount] = useState(0);
+  const [loseCount, setLoseCount] = useState(0);
 
   const clickResetNewGame = () => {
     reset();
@@ -33,7 +36,7 @@ function App() {
         newGame();
       }
     }).catch(() => {
-      console.log("erro ao requisitar api")
+      console.log("erro ao requisitar api reset")
     })
   }
 
@@ -42,6 +45,19 @@ function App() {
       alert("Você perdeu, inicie uma nova partida");
       return true;
     }
+  }
+
+  const allClicked = (mineField) => {
+    if(!mineField) return;
+    
+    for(let row in mineField) {
+      for(let column in mineField[row]) {
+        console.log(mineField[row][column].clicked)
+        if(!mineField[row][column].clicked && !mineField[row][column].mine && !mineField[row][column].flaged)
+          return;
+      }
+    }
+    alert("Você venceu a partida!")
   }
 
   const clickFieldPosition = (evt, row, column) => {
@@ -63,8 +79,9 @@ function App() {
       axios.put((evt.button === 2 && numberFlags > 0 ? urlFlagPosition : urlFieldPosition ) + `/${row}/${column}`, {}, headers).then(response => {
         setGameMatch(response.data)
         validateGameOver(response.data);
+        allClicked(response.data.mineField)
       }).catch(() => {
-        console.log("erro ao requisitar api")
+        console.log("erro ao requisitar api clickFieldPosition")
       })  
   }
 
@@ -85,10 +102,10 @@ function App() {
     }
 
     axios.post(urlNewGame, requestBody, headers).then(response => {
-      console.log(response);
       setGameMatch(response.data)
+      allClicked(response.data.mineField)
     }).catch(() => {
-      console.log("erro ao requisitar api")
+      console.log("erro ao requisitar api newGame")
     })
   }, [numberRows, numberColumns, numberMinesOnField]);
 
@@ -104,6 +121,10 @@ function App() {
     <div className="App">
       <header className="App-header">
         <input type="button" value="New game" onClick={clickResetNewGame} />
+        <div className="counters">
+          <div className="count-area win-count">{winCount}</div>
+          <div className="count-area lose-count">{loseCount}</div>
+        </div>
         <div>
           <div className="config-title">Rows</div>
           <div className="config-title">Columns</div>
@@ -111,9 +132,9 @@ function App() {
           <div className="config-title">Flags</div>
         </div>
         <div className="area_config">
-          <input type="number" className="config" value={numberRows} onChange={ev => setNumberRows(ev.target.value)} onKeyDown={onKeyDown} />
-          <input type="number" className="config" value={numberColumns} onChange={ev => setNumberColumns(ev.target.value)} onKeyDown={onKeyDown} />
-          <input type="number" className="config" value={numberMinesOnField} onChange={ev => setNumberMinesOnField(ev.target.value)} onKeyDown={onKeyDown} />
+          <input type="number" className="config" value={numberRows} min="5" onChange={ev => setNumberRows(ev.target.value)} onKeyDown={onKeyDown} />
+          <input type="number" className="config" value={numberColumns} min="5" onChange={ev => setNumberColumns(ev.target.value)} onKeyDown={onKeyDown} />
+          <input type="number" className="config" value={numberMinesOnField} min="4" onChange={ev => setNumberMinesOnField(ev.target.value)} onKeyDown={onKeyDown} />
           <input type="number" className="config" value={numberFlags} readOnly />
         </div>
 
