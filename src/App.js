@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
 
-const baseUrl = "http://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080"
+const baseUrl = "https://ec2-54-94-15-216.sa-east-1.compute.amazonaws.com:8080"
 const urlNewGame = `${baseUrl}/new_game`
 const urlFlagPosition = `${baseUrl}/flag_position`
 const urlFieldPosition = `${baseUrl}/click_position`
